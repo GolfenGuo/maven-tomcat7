@@ -1,0 +1,365 @@
+FORMAT: 1A
+
+# DaoHub
+Notes API is a *short texts saving* service similar to its physical paper presence on your table.
+
+# Group Repos
+Repo related resources of the **Repos API**
+
+## Repo Collection [/repos]
+
+### Create a Repo [POST]
++ Request (application/json)
+
+        { 
+          "namespace": "daocloud",
+          "name": "hello"
+        }
+
++ Response 201 (application/json)
+
+        { 
+          "id": 3,
+          "namespace": "daocloud",
+          "name": "hello",
+          "active": true,
+          "in_building": false,
+          "tags":[]
+        }
+
+## Repo [/repos/{ns}/{name}]
+A single Repo object with all its details
+
++ Parameters
+    + ns (required, String) ... String `namespace` of the Repo
+    + name (required, String) ... String `name` of the Repo
+
+### Retrieve a Repo [GET]
++ Response 200 (application/json)
+
+        { 
+          "id": 3,
+          "namespace": "daocloud",
+          "name": "hello",
+          "active": true,
+          "in_building": false,
+          "tags":["v1", "master"]
+        }
+
+### Delete a Repo [DELETE]
++ Response 200 (application/json)
+
+        
+# Group Repo Remote
+Remote related resources of the **Remote API**
+
+## Remote [/repos/{ns}/{name}/remote]
+
+### Update a Repo Remote [PUT]
++ Request (application/json)
+
+        {
+          "remote": "github.com",
+          "access": "abc",
+          "source": "GolfenGuo/go-test"
+        }
+        
+        or 
+        
+        {
+          "remote": "url",
+          "source": "http://7sbrys.com2.z0.glb.qiniucdn.com/gotest.zip"
+        }
+
++ Response 201 (application/json)
+
+        {
+          "id": 1,
+          "remote": "github.com",
+          "access": "abc",
+          "source": "GolfenGuo/go-test"
+        }
+        
+
+### Get Repo remote [GET]
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+          "remote": "github.com",
+          "access": "abc",
+          "source": "http://qiniu.com"
+        }
+        
+# Group Repo Triggers
+Trigger related resources of the **Trigger API**
+
+## Trigger [/repos/{ns}/{name}/trigger]
+
+### Update the Repo Trigger [PUT]
++ Request (application/json)
+
+        {
+          "trigger_regex": "tags/v.*",
+          "active": true,
+          "wait_ci _success":true
+        }
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+          "trigger_regex": "tags/v.*",
+          "active": true,
+          "wait_ci _success":true
+        }
+
+### Get a Trigger [GET]
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+           "trigger_regex": "tags/.*",
+          "active": true
+        }
+
+# Group Repo Builds
+Builds related resources of the **Build API**
+
+## Builds Collection [/repos/{ns}/{name}/builds?offset={offset}&size={size}]
++ Parameters
+    + ns (required, String) ... String `namespace` of the Repo
+    + name (required, String) ... String `name` of the Repo
+    
+### Manually Trigger a Build [POST]
++ Request (application/json)
+
+        with specified commit
+        {
+        "commit":"55957ed932b5dd2298de4a24115253892cfbfa8a", 
+        "tag":"v434"
+        }
+        
+        or with specified branch
+        
+        {
+        "branch":"master", 
+        "tag":"v434"
+        }
+        
+        or for URL remote
+        
+        {
+        "tag":"v434"
+        }
+        
++ Response 201 (application/json)
+    
+        {
+            "id": 3,
+            "status": "Error",
+            "started_at": 1425177290,
+            "finished_at": 1425177402,
+            "duration": 112,
+            "sha": "aeaa0466767c907e1a836a26311d5b9e1768d72c",
+            "branch": "master",
+            "pull_request": "",
+            "author": "DaoCloud",
+            "gravatar": "2eaf368f3fe9bdfce0a2df3c73168480",
+            "timestamp": "",
+            "message": "",
+            "created_at": 1425136340,
+            "updated_at": 1425177402
+        }
+        
+        
+### List all Build [GET]
++ Parameters
+    + offset (optional, Int) ... Int `offset` of the return list
+    + size (optional, Int) ... Int `size` of the return list
+
++ Response 200 (application/json)
+
+        [{
+            "id": 3,
+            "status": "Error",
+            "started_at": 1425177290,
+            "finished_at": 1425177402,
+            "duration": 112,
+            "sha": "aeaa0466767c907e1a836a26311d5b9e1768d72c",
+            "branch": "master",
+            "pull_request": "",
+            "author": "DaoCloud",
+            "gravatar": "2eaf368f3fe9bdfce0a2df3c73168480",
+            "timestamp": "",
+            "message": "",
+            "created_at": 1425136340,
+            "updated_at": 1425177402
+        }]
+
+### Rebuild [/repositories/{ns}/{name}/builds/{build}/actions/rebuild]
+        
+#### Rebuild a Build [POST]
+
++ Response 200 (application/json)
+
+        {
+            "id": 16,
+            "status": "Pending",
+            "started_at": 0,
+            "finished_at": 0,
+            "duration": 0,
+            "sha": "250f678f368db3ebbb3663f92a18b4c79330881f",
+            "branch": "",
+            "tag": "v434",
+            "pull_request": "",
+            "author": "DaoCloud",
+            "timestamp": "",
+            "message": "",
+            "created_at": 1425730778,
+            "updated_at": 1425730778
+        }
+        
+### Build output [/repositories/{ns}/{name}/builds/{build}/output]
+        
+#### Get output of a Build [GET]
+
++ Response 200 (application/json)
+
+        {
+          "logs": "this is a build log"
+        }
+        
+# Group Repo Tags
+Tags related resources of the **Tag API**
+
+## Tags Collection [/repos/{ns}/{name}/tags]
+### List all Tag [GET]
+
++ Response 200 (application/json)
+
+        [{
+          "id": 1,
+          "name": "v1", 
+          "build_id": "1"
+        }]
+        
+## Tags Collection [/repos/{ns}/{name}/tags/{tag}]
+### Get Tag [GET]
+
++ Response 200 (application/json)
+
+        {
+          "id": 1,
+          "name": "v1", 
+          "build_id": "1"
+        }
+        
+# Group Repo Hooks
+Hook related resources of the **Hook API**
+
+## Repo Hook [/repos/{ns}/{name}/hook]
+
+### Create the Repo Hook [PUT]
++ Request (application/json)
+
+        {
+            "hook_url":"http://127.0.0.1:8080/api/ping",
+            "hook_on _success": true,
+            "hook_on _failure":true
+        }
+
++ Response 200 (application/json)
+
+        {
+            "hook_url":"http://127.0.0.1:8080/api/ping",
+            "hook_on _success": true,
+            "hook_on _failure":true
+        }
+
+## Hook Callback [/callback_url]
+
+### Call the hook [POST]
+
++ Request (application/json)
+
+        {
+          "from_url": "http://16a848c5.shinebaby520.com",
+          "owner": {
+            "remote": "",
+            "login": "",
+            "name": "",
+            "gravatar": "",
+            "admin": false,
+            "active": false,
+            "syncing": false,
+            "created_at": 1425958863,
+            "updated_at": 1425958863,
+            "synced_at": 0
+          },
+          "repository": {
+            "remote": "github.com",
+            "host": "github.com",
+            "namespace": "golfen",
+            "name": "ci",
+            "source": "DaoCloud/go-test",
+            "trigger_regex": "tags/.*",
+            "trigger_active": true,
+            "trigger_wait_ci_success": true,
+            "registry": "192.168.1.49:5000",
+            "hook_url": "http://127.0.0.1:8080/api/ping",
+            "hook_on_success": true,
+            "hook_on_failure": true,
+            "url": "https://github.com/DaoCloud/go-test",
+            "clone_url": "git@github.com:DaoCloud/go-test.git",
+            "git_url": "git://github.com/DaoCloud/go-test.git",
+            "ssh_url": "git@github.com:DaoCloud/go-test.git",
+            "active": true,
+            "private": true,
+            "privileged": false,
+            "post_commits": true,
+            "pull_requests": false,
+            "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5KjqjU4zNIurfo53qyRIxXcQovSDMbxfBjzyL6qPDB+Qk0jatHO0XPeH7QoPqERFw4jxqcZKDRifcRma26JkjjZNz6KVPRiCeNIUnssfVyQJecnheYTyQ+SxirBy0lz1cC0T61tdueqMHLDRE3t0MO3PqzzIzF4mk573huF1sAOI0yAeuNWQp6pF2ssb9z24iyEUAHPeWW5pQ63l98Y0SJNt96UHorfsQkZambPxraFvTTLbOJwIplIITLAm6qzAlmEsEPZMpooUJCPZXpMHdHIy3GHcKF5P4LmftHuopQokIHCasHMqrOHoV7vwhXVnOR5+kf7Os2OqT8hO85h27\n",
+            "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEAuSo6o1OMzSLq36Od6skSMV3EKL0gzG8XwY88i+qjwwfkJNI2\nrRztFz3h+0KD6hERcOI8anGSg0Yn3EZmtuiZI42Tc+ilT0YgnjSFJ7LH1ckCXnJ4\nXmE8kPksYqwctJc9XAtE+tbXbnqjByw0RN7dDDtz6s8yMxeJpOe94bhdbADiNMgH\nrjVkKeqRdrLG/c9uIshFABz3lluaUOt5ffGNEiTbfelB6K37EJGWpmz8a2hb00y2\nzicCKZSCEywJuqswJZhLBD2TKaKFCQj2V6TB3RyMtxh3CheT+C5n7R7qKUKJCBwm\nrBzKqzh6Fe78IV1ZzkefpH+zrNjqk/ITvOYduwIDAQABAoIBAB2hI0b1XKeKudjV\nfrSOPkoF/hiiwvfToxKHECI3hsLzpU87ECK9aTb54Qpqx18SIh9VJGPIDrDQ7hny\nbgdAyxiEVB8NED7SMu/96XzDv/R2uNlSKe64Uo/EP5T+g41mUhxDdWNKM6jrGOFR\n8n8+xlJpxQ/C3f6M+qqXpqvS66gXaiUNOg3jzoViajVGl7pUkia/UdFTPSlRKEps\nutwNF2SJHbpTh2aAx61LxwCU4Wg5itsB2KHCAaGfOCQnYGdxZLfg9M6d0xQa3V2D\nhPbVKwhviTBTW0OGUxp5tuaYiW+wNWnNGPWCdchiW5ZE8U8+Uulkm1t4/7NnLFWT\ne5gSUckCgYEA7jgrl1J3l6mHna/tjH86w+78wGu14ArhDbkZMxHKqr+7ML48QQ0H\noixgyZVeQnYuRxRoWE2xzxX+wHCc15DBBXNqAmx3NGfSJDc6xepHgsdbUR7u8wBV\npoRJ+hMrrZbBNhXbynNiMB0yDBsB/wjDVz9jgfEwZZyNQYpMcYxAacUCgYEAxvxP\nIElvuMwJ0AWJUskTitnBTNuPVYkgoMRSjIMl/pMjhvm+ZAoyj4WP05NeA6DWs4Cm\nniCBnYSvhBXXOD8bym+k1PeyBMd6j7qFHWb9XNPUrFpdOon5nldJbvE6S/hhtYS0\nu/KJW/fkmK82uH8D82GevtxvFYR+7iCfVNFGYX8CgYBjPkVy0ml+ZqNYH14AxVSP\nIjZsV7M6tm2SEQYdj5D2V9A9e1OQ6kO+3WwpLzBI0gFvnWHnP98O3iP2ujOtXuH7\nSlzky5lR3NrgOZ4jq/nE0xcJEbEMzZvhNoW3SFtPA1pVFQAvNKi4UMFz56CKRnVT\nGNZ04S1/d5wlrN8yAvMm3QKBgGlClujRcBQlextbkmUEkR3mSubJTm1E+MmSkMhb\nqAGe/DAudJSfAFgDoy2cyyLINksGRx1mvKoCwoXwt8S9PYo8vMkbrkPw8diOJlSD\nYot0UxBJTP/mdPFZ4zKY0OnXHnjTFnhFuHu6CmbqaNv39LMOdNcp7GlJiYuWHjLT\n8ZMpAoGAJZ+vf27oY9rOuR/XItVV60ADG4kgA9Ie2Fk3aMxxSdSLQN2FySs9kiuR\ndxv1cYVGrWcQyH/3ynqoi39xocO8S4o+QeeHtI5pfgPr8IU6lDwRHToy9twW3RSu\nFKBRixhm3XG4Jp/1MKvuzfG9nk0NWQm/OMNSCQBm+5dtzDe5jgo=\n-----END RSA PRIVATE KEY-----\n",
+            "timeout": 7200,
+            "created_at": 1425898996,
+            "updated_at": 1425959344
+          },
+          "commit": {
+            "id": 12,
+            "status": "Failure",
+            "started_at": 1425959441,
+            "finished_at": 1425959446,
+            "duration": 5,
+            "sha": "250f678f368db3ebbb3663f92a18b4c79330881f",
+            "branch": "tags/yy",
+            "tag": "yy",
+            "pull_request": "",
+            "author": "golfen.guo@daocloud.io",
+            "timestamp": "2015-03-05T14:55:38+08:00",
+            "message": "initial commit",
+            "created_at": 1425959441,
+            "updated_at": 1425959446
+          }
+        }
+    
++ Response 200 (application/json)
+
+# Group Repo Logs
+Logs related resources of the **Log API**
+
+## Logs Collection [/repos/{ns}/{name}/logs]
+### List all Tag [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+            "log": "fatal: unable to access 'https://github.com/jpetazzo/dind/': Could not resolve host: github.com",
+            "created_at": 1425625549
+            }
+        ]
